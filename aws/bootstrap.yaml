@@ -119,6 +119,15 @@ Resources:
       HostedZoneConfig:
         Comment: Public hosted zone for base domain
 
+  ApiBaseDomainCertificate: 
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: !Ref ApiBaseDomain
+      DomainValidationOptions:
+        - DomainName: !Ref ApiBaseDomain
+          HostedZoneId: !Ref PublicHostedZone
+      ValidationMethod: DNS
+
 Outputs:
   Route53NameServers:
     Description: Route53 hosted zone name servers
