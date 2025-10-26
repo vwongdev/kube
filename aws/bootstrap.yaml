@@ -9,6 +9,10 @@ Parameters:
   RepoName:
     Type: String
     Description: Name of the repository.
+  ApiBaseDomain:
+    Type: String
+    Description: Base domain name for the Route53 hosted zone.
+    Default: ""
 
 Resources:
   GitHubOIDCProvider:
@@ -107,3 +111,17 @@ Resources:
           KeyType: HASH
       SSESpecification:
         SSEEnabled: true
+
+  PublicHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref ApiBaseDomain
+      HostedZoneConfig:
+        Comment: Public hosted zone for base domain
+
+Outputs:
+  Route53NameServers:
+    Description: Route53 hosted zone name servers
+    Value: !Join [",", !GetAtt PublicHostedZone.NameServers]
+    Export:
+      Name: !Sub "${AWS::StackName}-Route53NameServers"
