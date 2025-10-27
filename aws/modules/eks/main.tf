@@ -6,7 +6,7 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = var.subnet_ids
   }
 
-  version = "1.29"
+  version = "1.34"
 }
 
 resource "aws_iam_role" "cluster_role" {
