@@ -1,6 +1,4 @@
 #!/bin/bash
-eksctl utils associate-iam-oidc-provider --cluster kube-cluster --region $AWS_REGION --approve
-
 eksctl create iamserviceaccount \
   --name ebs-csi-controller-sa \
   --namespace kube-system \
