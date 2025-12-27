@@ -47,5 +47,6 @@ jobs:
       - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} sh aws/init/install-access-role.sh
       - run: sh common/init/install-argocd.sh
       - run: sh common/init/install-cnpg.sh
+      - run: AWS_REGION=us-east-1 sh aws/init/install-ebs-csi-driver.sh || true
       - run: docker build common/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
       - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} AWS_REGION=${{ vars.AWS_REGION }} ./aws/scripts/push-app-image.sh
