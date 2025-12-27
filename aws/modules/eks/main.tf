@@ -2,6 +2,10 @@ resource "aws_eks_cluster" "main" {
   name     = "kube-cluster"
   role_arn = aws_iam_role.cluster_role.arn
 
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+    
+  }
   vpc_config {
     subnet_ids = var.subnet_ids
   }
@@ -113,4 +117,52 @@ resource "aws_iam_role_policy" "cluster_access_policy" {
       }
     ]
   })
+}
+
+resource "aws_eks_access_entry" "cluster_access_role" {
+  cluster_name      = aws_eks_cluster.main.name
+  principal_arn     = aws_iam_role.cluster_access_role.arn
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "cluster_access_role" {
+  cluster_name  = aws_eks_cluster.main.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = aws_iam_role.cluster_access_role.arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+resource "aws_eks_access_entry" "admin_user" {
+  cluster_name      = aws_eks_cluster.main.name
+  principal_arn     = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/admin"
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin_user" {
+  cluster_name  = aws_eks_cluster.main.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/admin"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+resource "aws_eks_access_entry" "primary_pipeline_role" {
+  cluster_name      = aws_eks_cluster.main.name
+  principal_arn     = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/PrimaryPipelineRole"
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "primary_pipeline_role" {
+  cluster_name  = aws_eks_cluster.main.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/PrimaryPipelineRole"
+
+  access_scope {
+    type = "cluster"
+  }
 }

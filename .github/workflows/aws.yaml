@@ -44,7 +44,6 @@ jobs:
             -var="region=${{ vars.AWS_REGION }}"
         working-directory: aws
       - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
-      - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} sh aws/init/install-access-role.sh
       - run: sh common/init/install-argocd.sh
       - run: sh common/init/install-cnpg.sh
       - run: AWS_REGION=us-east-1 sh aws/init/install-ebs-csi-driver.sh || true
