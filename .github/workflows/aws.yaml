@@ -29,7 +29,7 @@ jobs:
       - run: |
           aws cloudformation deploy \
             --stack-name bootstrap \
-            --template-file aws/bootstrap.yaml \
+            --template-file providers/aws/bootstrap.yaml \
             --parameter-overrides OrgName=${{ github.repository_owner }} RepoName=${{ github.event.repository.name }} \
             --capabilities CAPABILITY_NAMED_IAM
       - run: |
@@ -38,13 +38,13 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
             -backend-config="dynamodb_table=tf-state-table"
-        working-directory: aws
+        working-directory: providers/aws
       - run: |
           terraform apply -auto-approve \
             -var="region=${{ vars.AWS_REGION }}"
-        working-directory: aws
+        working-directory: providers/aws
       - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
       - run: sh common/init/install-argocd.sh
       - run: sh common/init/install-cnpg.sh
       - run: docker build common/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
-      - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} AWS_REGION=${{ vars.AWS_REGION }} ./aws/scripts/push-app-image.sh
+      - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} AWS_REGION=${{ vars.AWS_REGION }} ./providers/aws/scripts/push-app-image.sh
