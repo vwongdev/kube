@@ -46,5 +46,10 @@ jobs:
       - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
       - run: sh common/install-argocd.sh
       - run: sh common/install-cnpg.sh
+      - run: |
+          sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml
+          kubectl apply -k bootstrap/overlays/aws-prod
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: docker build apps/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
       - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} AWS_REGION=${{ vars.AWS_REGION }} ./providers/aws/scripts/push-app-image.sh
