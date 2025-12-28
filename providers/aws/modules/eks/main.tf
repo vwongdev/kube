@@ -209,5 +209,12 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
 resource "aws_eks_addon" "ebs_csi_driver" {
   cluster_name             = aws_eks_cluster.main.name
   addon_name               = "aws-ebs-csi-driver"
+
+  configuration_values = jsonencode({
+    defaultStorageClass = {
+      enabled = true
+    }
+  })
+
   service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
 }
