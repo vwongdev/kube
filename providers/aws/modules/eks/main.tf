@@ -51,6 +51,10 @@ resource "aws_eks_node_group" "node_group" {
   node_role_arn   = aws_iam_role.node_group_role.arn
   subnet_ids      = var.subnet_ids
 
+  launch_template {
+    name    = aws_launch_template.eks_nodes.name
+    version = aws_launch_template.eks_nodes.latest_version
+  }
   scaling_config {
     desired_size = 3
     max_size     = 5
@@ -58,6 +62,17 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   instance_types = ["t3.small"]
+}
+
+resource "aws_launch_template" "eks_nodes" {
+  name_prefix = "eks-node-group-template"
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required" # Enforces IMDSv2
+    http_put_response_hop_limit = 2          # ALLOWS PODS TO REACH METADATA
+    instance_metadata_tags      = "enabled"
+  }
 }
 
 resource "aws_iam_role" "node_group_role" {
