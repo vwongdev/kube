@@ -52,4 +52,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: docker build apps/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
-      - run: AWS_ACCOUNT=${{ vars.AWS_ACCOUNT }} AWS_REGION=${{ vars.AWS_REGION }} ./providers/aws/scripts/push-app-image.sh
+      - run: ./providers/aws/scripts/push-app-image.sh

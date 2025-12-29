@@ -1,4 +1,6 @@
 #!/bin/bash
+source "$(dirname "$0")/aws-env.sh"
+
 export $(
     printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" \
     $(
