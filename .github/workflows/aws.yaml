@@ -41,7 +41,8 @@ jobs:
         working-directory: providers/aws
       - run: |
           terraform apply -auto-approve \
-            -var="region=${{ vars.AWS_REGION }}"
+            -var="region=${{ vars.AWS_REGION }}" \
+            -var="domain=${{ vars.API_DOMAIN }}"
         working-directory: providers/aws
       - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
       - run: sh common/install-argocd.sh
