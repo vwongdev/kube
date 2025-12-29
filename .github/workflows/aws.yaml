@@ -53,3 +53,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: docker build apps/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
       - run: ./providers/aws/scripts/push-app-image.sh
+      - run: terraform output
+        working-directory: providers/aws
