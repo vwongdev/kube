@@ -45,7 +45,6 @@ jobs:
         working-directory: providers/aws
       - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
       - run: sh common/install-argocd.sh
-      - run: sh common/install-cnpg.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml
           kubectl apply -k bootstrap/overlays/aws-prod
