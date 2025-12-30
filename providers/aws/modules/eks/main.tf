@@ -13,16 +13,6 @@ resource "aws_eks_cluster" "main" {
   version = "1.34"
 }
 
-data "tls_certificate" "eks_oidc" {
-  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
-}
-
-resource "aws_iam_openid_connect_provider" "eks_oidc" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.eks_oidc.certificates[0].sha1_fingerprint]
-  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
-}
-
 resource "aws_iam_role" "cluster_role" {
   name = "kube-cluster-role"
 
@@ -199,18 +189,15 @@ resource "aws_iam_role" "ebs_csi_driver" {
     Version = "2012-10-17"
     Statement = [
       {
+        Action = [
+          "sts:AssumeRole",
+          "sts:TagSession"
+        ]
         Effect = "Allow"
         Principal = {
-          Federated = aws_iam_openid_connect_provider.eks_oidc.arn
+          Service = "pods.eks.amazonaws.com"
         }
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Condition = {
-          StringEquals = {
-            "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
-            "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:aud" = "sts.amazonaws.com"
-          }
-        }
-      }
+      },
     ]
   })
 }
@@ -218,6 +205,19 @@ resource "aws_iam_role" "ebs_csi_driver" {
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver" {
   role       = aws_iam_role.ebs_csi_driver.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
+
+resource "aws_eks_pod_identity_association" "ebs_csi" {
+  cluster_name    = aws_eks_cluster.main.name
+  namespace       = "kube-system"
+  service_account = "ebs-csi-controller-sa"
+  role_arn        = aws_iam_role.ebs_csi_driver.arn
+}
+
+resource "aws_eks_addon" "pod_identity" {
+  cluster_name                = aws_eks_cluster.main.name
+  addon_name                  = "eks-pod-identity-agent"
+  resolve_conflicts_on_create = "OVERWRITE"
 }
 
 # EBS CSI Driver EKS Addon
@@ -230,8 +230,6 @@ resource "aws_eks_addon" "ebs_csi_driver" {
       enabled = true
     }
   })
-
-  service_account_role_arn = aws_iam_role.ebs_csi_driver.arn
 }
 
 resource "aws_iam_role" "alb_controller" {
@@ -241,18 +239,15 @@ resource "aws_iam_role" "alb_controller" {
     Version = "2012-10-17"
     Statement = [
       {
+        Action = [
+          "sts:AssumeRole",
+          "sts:TagSession"
+        ]
         Effect = "Allow"
         Principal = {
-          Federated = aws_iam_openid_connect_provider.eks_oidc.arn
+          Service = "pods.eks.amazonaws.com"
         }
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Condition = {
-          StringEquals = {
-            "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
-            "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:aud" = "sts.amazonaws.com"
-          }
-        }
-      }
+      },
     ]
   })
 }
@@ -517,4 +512,11 @@ resource "aws_iam_policy" "alb_controller" {
 resource "aws_iam_role_policy_attachment" "alb_controller" {
   role       = aws_iam_role.alb_controller.name
   policy_arn = aws_iam_policy.alb_controller.arn
+}
+
+resource "aws_eks_pod_identity_association" "alb_controller" {
+  cluster_name    = aws_eks_cluster.main.name
+  namespace       = "kube-system"
+  service_account = "aws-load-balancer-controller"
+  role_arn        = aws_iam_role.alb_controller.arn
 }
