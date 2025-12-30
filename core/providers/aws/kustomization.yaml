@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ../../base
   - ./load-balancer-controller.yaml
+  - ./external-dns-controller.yaml
