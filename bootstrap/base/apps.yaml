@@ -10,7 +10,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/V-Wong/kube.git
+        repoURL: https://github.com/VWongDev/kube.git
         targetRevision: HEAD
         path: '{{path}}'
       destination:

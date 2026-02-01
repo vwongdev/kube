@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/V-Wong/kube.git'
+    repoURL: 'https://github.com/VWongDev/kube.git'
     targetRevision: HEAD
   destination:
     server: 'https://kubernetes.default.svc'

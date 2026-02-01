@@ -18,7 +18,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/V-Wong/kube.git
+        repoURL: https://github.com/VWongDev/kube.git
         revision: HEAD
         directories:
           - path: apps/*/overlays/aws-prod
