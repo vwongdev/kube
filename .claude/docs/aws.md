@@ -61,4 +61,3 @@ terraform plan -var="region=us-east-1" -var="domain=example.com"
 # Apply changes
 terraform apply -var="region=us-east-1" -var="domain=example.com"
 ```
-

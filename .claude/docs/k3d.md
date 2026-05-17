@@ -59,4 +59,3 @@ k3d integrates with the Kustomize structure:
 - `overlays/k3d-dev/` - Development environment overlays
 
 Access applications via `http://localhost:8081` when using the default port mapping.
-

@@ -89,4 +89,3 @@ Since ArgoCD syncs from `main` branch:
 - Commit messages should clearly indicate deployment impact
 - Use `feat` and `fix` types to indicate user-visible changes
 - Use `chore` and `refactor` for non-deployment changes
-

@@ -30,4 +30,3 @@ Build for a specific environment:
 ```bash
 kustomize build apps/sample-app/overlays/aws-prod
 ```
-
