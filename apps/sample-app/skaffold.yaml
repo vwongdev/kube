@@ -8,7 +8,6 @@ build:
       docker:
         dockerfile: Dockerfile
 manifests:
-  rawYaml:
-    - manifests/app.yaml
-    - manifests/db.yaml
-    - manifests/ingress.yaml
+  kustomize:
+    paths:
+      - overlays/k3d-dev
