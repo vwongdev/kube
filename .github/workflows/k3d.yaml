@@ -1,0 +1,49 @@
+name: Validate k3d environment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-k3d:
+    runs-on: ubuntu-22.04
+    env:
+      K3D_VERSION: v5.9.0
+      SKAFFOLD_VERSION: v2.24.0
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install dependencies
+        run: |
+          curl --silent --location https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=${K3D_VERSION} bash
+          curl --silent --location "https://storage.googleapis.com/skaffold/releases/${SKAFFOLD_VERSION}/skaffold-linux-amd64" --output /tmp/skaffold
+          sudo install /tmp/skaffold /usr/local/bin/skaffold
+      - run: make -f providers/k3d/Makefile k3d-create
+      - run: sh common/install-argocd.sh
+      - run: kubectl rollout status statefulset/argocd-application-controller --namespace argocd --timeout=300s
+      # Skaffold builds and deploys the application image, so ArgoCD is given
+      # core only. The bootstrap ApplicationSet is deliberately not applied:
+      # apps/*/overlays/k3d-dev carries no image mapping, so ArgoCD would
+      # deploy the unresolvable app:latest and fight Skaffold for the Deployment.
+      - run: kubectl apply -k core/overlays/k3d-dev
+      - name: Wait for CloudNativePG
+        run: |
+          timeout 300 bash -c 'until kubectl get crd clusters.postgresql.cnpg.io > /dev/null 2>&1; do sleep 5; done'
+          kubectl wait --for=condition=established crd/clusters.postgresql.cnpg.io --timeout=60s
+          timeout 300 bash -c 'until kubectl wait --for=condition=available deployment --all --namespace cnpg-system --timeout=60s; do sleep 5; done'
+      - run: skaffold run
+        working-directory: apps/sample-app
+      - name: Verify the application responds through the ingress
+        run: |
+          timeout 120 bash -c 'until curl --silent --fail http://localhost:8081/app; do sleep 5; done'
+      - name: Report cluster state
+        if: failure()
+        run: |
+          kubectl get all,applications.argoproj.io,clusters.postgresql.cnpg.io --all-namespaces
+          kubectl describe pods
+      - run: make -f providers/k3d/Makefile k3d-destroy
+        if: always()
