@@ -28,15 +28,17 @@ make -f providers/k3d/Makefile skaffold-dev
 ### Prerequisites
 A new AWS account can be bootstrapped for Terraform management. This must be run manually outside CI/CD for the first time
 ```sh 
-aws cloudformation deploy --stack-name bootstrap --template-file providers/aws/bootstrap.yaml --parameter-overrides OrgName=org-name RepoName=repo-name ApiBaseDomain=api.example.com --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation deploy --stack-name bootstrap --template-file providers/aws/bootstrap.yaml --parameter-overrides OrgName=org-name RepoName=repo-name --capabilities CAPABILITY_NAMED_IAM
 ```
 
-This will also create a public Route 53 zone with associated namespace servers on the specified domain. These namespace servers must be manually added to the namespace registrar
+Once the stack exists, subsequent runs for bootstrapping can be triggered via Github workflows.
+
+The public Route 53 zone for the API domain is created by Terraform. The first workflow run creates the zone and then halts on certificate validation, because the namespace servers are not yet delegated. Read them from the Terraform output and manually add them to the namespace registrar, then re-run the workflow
 ```sh
-aws cloudformation describe-stacks --stack-name bootstrap
+terraform -chdir=providers/aws output route53_name_servers
 ```
 
-After manually adding the namespace servers to the namespace registrar, subsequent runs for bootstrapping can be triggered via Github workflows. This requires setting the following environment configuration variables in the repository settings
+Running the workflow requires setting the following environment configuration variables in the repository settings
 ```
 AWS_ACCOUNT=123456789012
 AWS_REGION=us-east-1
