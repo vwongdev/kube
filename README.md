@@ -33,7 +33,7 @@ aws cloudformation deploy --stack-name bootstrap --template-file providers/aws/b
 
 Once the stack exists, subsequent runs for bootstrapping can be triggered via Github workflows.
 
-The public Route 53 zone for the API domain is created by Terraform. The first workflow run creates the zone and then halts on certificate validation, because the namespace servers are not yet delegated. Read them from the Terraform output and manually add them to the namespace registrar, then re-run the workflow
+The public Route 53 zone for the API domain is created by Terraform. The first workflow run creates the zone and then halts on certificate validation, because the name servers are not yet delegated. Read them from the Terraform output and manually add them to the domain registrar, then re-run the workflow
 ```sh
 terraform -chdir=providers/aws output route53_name_servers
 ```
@@ -42,4 +42,10 @@ Running the workflow requires setting the following environment configuration va
 ```
 AWS_ACCOUNT=123456789012
 AWS_REGION=us-east-1
+API_DOMAIN=api.example.com
+```
+
+It also requires the following secret, which ArgoCD uses to read the manifests in this repository. A personal access token with read access to the repository contents is sufficient
+```
+GH_TOKEN=github_pat_xxxxxxxxxxxx
 ```
