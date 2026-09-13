@@ -47,8 +47,8 @@ resource "aws_acm_certificate_validation" "cert_verify" {
 
 data "external" "actual_ns" {
   program = [
-    "sh", 
-    "-c", 
+    "sh",
+    "-c",
     "echo \"{\\\"nameservers\\\": \\\"$(dig +short NS ${aws_route53_zone.hosted_zone.name} | tr '\\n' ',' | sed 's/,$//')\\\"}\""
   ]
 }

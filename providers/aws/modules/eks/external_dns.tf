@@ -30,7 +30,7 @@ resource "aws_iam_policy" "external_dns" {
         Resource = ["arn:aws:route53:::hostedzone/*"]
       },
       {
-        Effect   = "Allow"
+        Effect = "Allow"
         Action = [
           "route53:ListHostedZones",
           "route53:ListResourceRecordSets"
