@@ -48,7 +48,7 @@ jobs:
       - run: sh common/install-argocd.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml
-          kubectl apply -k bootstrap/overlays/${{ matrix.environment }}
+          kubectl apply -k bootstrap/overlays/aws-${{ matrix.environment }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: docker build apps/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
