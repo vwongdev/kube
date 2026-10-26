@@ -1,14 +1,24 @@
 # Multicloud Kubernetes Provisioning
 This repository contains IaC and scripts to provision a Kubernetes cluster across multiple cloud providers.
 
-## k3d (Local / Self-Hosted)
-### Prerequisites
+## Repository Layout
+Directories are listed in deployment order.
+
+1. [`providers/`](providers): Cluster provisioning for each infrastructure provider.
+2. [`common/`](common): Provider-agnostic scripts such as the ArgoCD installer.
+3. [`bootstrap/`](bootstrap): ArgoCD Applications that deploy core components and discover apps.
+4. [`core/`](core): Cluster components such as operators and controllers, synced by ArgoCD.
+5. [`apps/`](apps): Workloads deployed by ArgoCD, one directory per app.
+
+## Providers
+### k3d (Local / Self-Hosted)
+#### Prerequisites
 All dependencies can be installed via a Makefile task
 ```sh
 make -f providers/k3d/Makefile mac-deps
 ```
 
-### Usage
+#### Usage
 Create k3d cluster:
 ```sh
 make -f providers/k3d/Makefile k3d-create CLUSTER_NAME=cluster-name
@@ -24,8 +34,8 @@ Start local development environment:
 make -f providers/k3d/Makefile skaffold-dev
 ```
 
-## Amazon Web Services
-### Prerequisites
+### Amazon Web Services
+#### Prerequisites
 A new AWS account can be bootstrapped for Terraform management. This must be run manually outside CI/CD for the first time
 ```sh 
 aws cloudformation deploy --stack-name bootstrap --template-file providers/aws/bootstrap.yaml --parameter-overrides OrgName=org-name RepoName=repo-name --capabilities CAPABILITY_NAMED_IAM
