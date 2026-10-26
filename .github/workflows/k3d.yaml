@@ -23,7 +23,7 @@ jobs:
           curl --silent --location "https://storage.googleapis.com/skaffold/releases/${SKAFFOLD_VERSION}/skaffold-linux-amd64" --output /tmp/skaffold
           sudo install /tmp/skaffold /usr/local/bin/skaffold
       - run: make -f providers/k3d/Makefile k3d-create
-      - run: sh common/install-argocd.sh
+      - run: sh bootstrap/install-argocd.sh
       - run: kubectl rollout status statefulset/argocd-application-controller --namespace argocd --timeout=300s
       # Skaffold builds and deploys the application image, so ArgoCD is given
       # core only. The bootstrap ApplicationSet is deliberately not applied:

@@ -6,7 +6,7 @@ ArgoCD provides GitOps-based continuous delivery for Kubernetes applications in 
 
 ArgoCD is installed via the `install-argocd.sh` script:
 ```bash
-sh common/install-argocd.sh
+sh bootstrap/install-argocd.sh
 ```
 
 This creates the `argocd` namespace and installs ArgoCD using the official stable manifests.
@@ -17,6 +17,7 @@ ArgoCD Applications are defined in the `bootstrap/` directory:
 
 ```
 bootstrap/
+├── install-argocd.sh    # ArgoCD installer
 ├── base/
 │   ├── root.yaml        # Root application (bootstraps core infrastructure)
 │   ├── apps.yaml        # ApplicationSet (auto-discovers apps)

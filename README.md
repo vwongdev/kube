@@ -5,10 +5,9 @@ This repository contains IaC and scripts to provision a Kubernetes cluster acros
 Directories are listed in deployment order.
 
 1. [`providers/`](providers): Cluster provisioning for each infrastructure provider.
-2. [`common/`](common): Provider-agnostic scripts such as the ArgoCD installer.
-3. [`bootstrap/`](bootstrap): ArgoCD Applications that deploy core components and discover apps.
-4. [`core/`](core): Cluster components such as operators and controllers, synced by ArgoCD.
-5. [`apps/`](apps): Workloads deployed by ArgoCD, one directory per app.
+2. [`bootstrap/`](bootstrap): ArgoCD installer and Applications that deploy core components and discover apps.
+3. [`core/`](core): Cluster components such as operators and controllers, synced by ArgoCD.
+4. [`apps/`](apps): Workloads deployed by ArgoCD, one directory per app.
 
 ## Providers
 ### k3d (Local / Self-Hosted)
