@@ -29,3 +29,16 @@ jobs:
             --service-account projects/${{ vars.GCP_PROJECT }}/serviceAccounts/infra-manager@${{ vars.GCP_PROJECT }}.iam.gserviceaccount.com \
             --local-source providers/gcp/bootstrap \
             --input-values project=${{ vars.GCP_PROJECT }},region=${{ vars.GCP_REGION }},org_name=${{ github.repository_owner }},repo_name=${{ github.event.repository.name }}
+      - run: |
+          terraform init \
+            -backend-config="bucket=tf-state-bucket-${{ vars.GCP_PROJECT }}" \
+            -backend-config="prefix=${{ matrix.environment }}"
+        working-directory: providers/gcp
+      - run: |
+          terraform apply -auto-approve \
+            -var-file="env/${{ matrix.environment }}.tfvars" \
+            -var="project=${{ vars.GCP_PROJECT }}" \
+            -var="region=${{ vars.GCP_REGION }}"
+        working-directory: providers/gcp
+      - run: terraform output
+        working-directory: providers/gcp
