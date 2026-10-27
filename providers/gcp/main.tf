@@ -29,3 +29,9 @@ module "gke" {
   services_range_name = module.vpc.services_range_name
   admin_email         = var.admin_email
 }
+
+module "artifact_registry" {
+  source          = "./modules/artifact_registry"
+  region          = var.region
+  repository_name = var.repository_name
+}

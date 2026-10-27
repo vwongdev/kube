@@ -13,3 +13,7 @@ variable "cluster_name" {
 variable "admin_email" {
   type = string
 }
+
+variable "repository_name" {
+  type = string
+}
