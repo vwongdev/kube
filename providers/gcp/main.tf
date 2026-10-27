@@ -27,4 +27,5 @@ module "gke" {
   subnet_id           = module.vpc.subnet_id
   pods_range_name     = module.vpc.pods_range_name
   services_range_name = module.vpc.services_range_name
+  admin_email         = var.admin_email
 }
