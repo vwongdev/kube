@@ -8,6 +8,7 @@ crash.log
 # Exclude override files as they are usually local
 *.tfvars
 *.tfvars.json
+!providers/aws/env/*.tfvars
 
 # Ignore Terraform plan output
 *.plan

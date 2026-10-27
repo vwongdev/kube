@@ -17,13 +17,15 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./modules/vpc"
-  region = var.region
+  source       = "./modules/vpc"
+  region       = var.region
+  cluster_name = var.cluster_name
 }
 
 module "eks" {
-  source     = "./modules/eks"
-  subnet_ids = module.vpc.private_subnet_ids
+  source       = "./modules/eks"
+  subnet_ids   = module.vpc.private_subnet_ids
+  cluster_name = var.cluster_name
 }
 
 module "ecr" {
