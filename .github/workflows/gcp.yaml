@@ -41,5 +41,7 @@ jobs:
             -var="region=${{ vars.GCP_REGION }}" \
             -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
+      - run: docker build apps/sample-app -t "$(terraform -chdir=providers/gcp output -raw repository_url)/sample-app"
+      - run: ./providers/gcp/scripts/push-app-image.sh "$(terraform -chdir=providers/gcp output -raw repository_url)/sample-app"
       - run: terraform output
         working-directory: providers/gcp
