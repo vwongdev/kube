@@ -39,6 +39,7 @@ jobs:
             -var-file="env/${{ matrix.environment }}.tfvars" \
             -var="project=${{ vars.GCP_PROJECT }}" \
             -var="region=${{ vars.GCP_REGION }}" \
+            -var="domain=${{ vars.GCP_API_DOMAIN }}" \
             -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
       - run: docker build apps/sample-app -t "$(terraform -chdir=providers/gcp output -raw repository_url)/sample-app"
