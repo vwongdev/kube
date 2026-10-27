@@ -7,8 +7,8 @@ This project uses Kustomize to manage Kubernetes manifests with a three-layer hi
 ```
 <component>/
 ├── base/              # Base Kubernetes manifests
-├── providers/         # Provider-specific configurations (AWS, k3d)
-└── overlays/          # Environment-specific overlays (aws-prod, k3d-dev)
+├── providers/         # Provider-specific configurations (AWS, GCP, k3d)
+└── overlays/          # Environment-specific overlays (aws-prod, gcp-prod, k3d-dev)
 ```
 
 ## Hierarchy
