@@ -6,10 +6,7 @@ metadata:
 spec:
   source:
     helm:
-      values: |
-        clusterName: kube-cluster
+      valuesObject:
         serviceAccount:
-          create: true
-          name: aws-load-balancer-controller
           annotations:
             eks.amazonaws.com/role-arn: arn:aws:iam::788455525284:role/kube-cluster-alb-controller-role
