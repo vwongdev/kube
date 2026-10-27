@@ -100,7 +100,7 @@ resource "aws_iam_role_policy_attachment" "node_group_AmazonEC2ContainerRegistry
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "cluster_access_role" {
-  name = "ClusterAccessRole"
+  name = "${var.cluster_name}-access-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
