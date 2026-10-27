@@ -12,3 +12,9 @@ provider "google" {
   project = var.project
   region  = var.region
 }
+
+module "vpc" {
+  source       = "./modules/vpc"
+  region       = var.region
+  cluster_name = var.cluster_name
+}
