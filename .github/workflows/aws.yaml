@@ -41,10 +41,11 @@ jobs:
         working-directory: providers/aws
       - run: |
           terraform apply -auto-approve \
+            -var-file="env/${{ matrix.environment }}.tfvars" \
             -var="region=${{ vars.AWS_REGION }}" \
             -var="domain=${{ vars.API_DOMAIN }}"
         working-directory: providers/aws
-      - run: aws eks update-kubeconfig --name kube-cluster --region ${{ vars.AWS_REGION }}
+      - run: aws eks update-kubeconfig --name "$(terraform -chdir=providers/aws output -raw cluster_name)" --region ${{ vars.AWS_REGION }}
       - run: sh bootstrap/install-argocd.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml

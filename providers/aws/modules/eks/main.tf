@@ -1,5 +1,5 @@
 resource "aws_eks_cluster" "main" {
-  name     = "kube-cluster"
+  name     = var.cluster_name
   role_arn = aws_iam_role.cluster_role.arn
 
   access_config {
@@ -14,7 +14,7 @@ resource "aws_eks_cluster" "main" {
 }
 
 resource "aws_iam_role" "cluster_role" {
-  name = "kube-cluster-role"
+  name = "${var.cluster_name}-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -66,7 +66,7 @@ resource "aws_launch_template" "eks_nodes" {
 }
 
 resource "aws_iam_role" "node_group_role" {
-  name = "kube-node-group-role"
+  name = "${var.cluster_name}-node-group-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

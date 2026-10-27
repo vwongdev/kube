@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ebs_csi_driver" {
-  name = "kube-cluster-ebs-csi-driver-role"
+  name = "${var.cluster_name}-ebs-csi-driver-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
