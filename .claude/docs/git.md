@@ -28,6 +28,7 @@ This repository follows conventional commit message format to maintain clear, se
 Scope indicates the area of the codebase affected. Multiple scopes can be used when changes affect multiple areas:
 
 - **aws** - AWS provider/infrastructure (Terraform, EKS, ECR, Route53)
+- **gcp** - Google Cloud provider/infrastructure (Terraform, GKE, Artifact Registry, Cloud DNS)
 - **app** - Application manifests
 - **k3d** - k3d local development environment
 - **argocd** - ArgoCD application or configuration changes

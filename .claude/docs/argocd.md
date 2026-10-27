@@ -61,6 +61,7 @@ Git repository credentials are stored in `bootstrap/base/secret.yaml`:
 
 Overlays customize ArgoCD Applications per environment:
 - **aws-prod**: Points to `apps/*/overlays/aws-prod` and `core/overlays/aws-prod`
+- **gcp-prod**: Points to `apps/*/overlays/gcp-prod` and `core/overlays/gcp-prod`
 - **k3d-dev**: Points to `apps/*/overlays/k3d-dev` and `core/overlays/k3d-dev`
 
 ## Usage
