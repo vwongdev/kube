@@ -35,7 +35,7 @@ jobs:
       - run: |
           terraform init \
             -backend-config="bucket=tf-state-bucket-${{ vars.AWS_ACCOUNT }}" \
-            -backend-config="key=terraform.tfstate" \
+            -backend-config="key=${{ matrix.environment }}/terraform.tfstate" \
             -backend-config="region=${{ vars.AWS_REGION }}" \
             -backend-config="dynamodb_table=tf-state-table"
         working-directory: providers/aws
