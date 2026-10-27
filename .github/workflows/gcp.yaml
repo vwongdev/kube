@@ -22,6 +22,8 @@ jobs:
           workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/github
           service_account: primary-pipeline@${{ vars.GCP_PROJECT }}.iam.gserviceaccount.com
       - uses: google-github-actions/setup-gcloud@v3
+        with:
+          install_components: gke-gcloud-auth-plugin
       # The deployment location only holds Infrastructure Manager metadata; resources use the input region
       - run: |
           gcloud infra-manager deployments apply \
@@ -42,6 +44,13 @@ jobs:
             -var="domain=${{ vars.GCP_API_DOMAIN }}" \
             -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
+      - run: gcloud container clusters get-credentials "$(terraform -chdir=providers/gcp output -raw cluster_name)" --region ${{ vars.GCP_REGION }}
+      - run: sh bootstrap/install-argocd.sh
+      - run: |
+          sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml
+          kubectl apply -k bootstrap/overlays/gcp-${{ matrix.environment }}
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: docker build apps/sample-app -t "$(terraform -chdir=providers/gcp output -raw repository_url)/sample-app"
       - run: ./providers/gcp/scripts/push-app-image.sh "$(terraform -chdir=providers/gcp output -raw repository_url)/sample-app"
       - run: terraform output
