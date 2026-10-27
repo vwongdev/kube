@@ -45,7 +45,7 @@ Configure backend via environment variables or `terraform init -backend-config`.
 
 ## Scripts
 
-- `assume-cluster-access-role.sh` - Assumes ClusterAccessRole for EKS access
+- `assume-cluster-access-role.sh` - Assumes a cluster's access role for EKS access (cluster name argument, default `kube-cluster`)
 - `aws-env.sh` - Sets up AWS environment variables
 - `push-app-image.sh` - Pushes container images to ECR
 
