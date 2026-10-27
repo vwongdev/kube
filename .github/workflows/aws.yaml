@@ -52,7 +52,7 @@ jobs:
           kubectl apply -k bootstrap/overlays/aws-${{ matrix.environment }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      - run: docker build apps/sample-app -t ${{ vars.AWS_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/kube
-      - run: ./providers/aws/scripts/push-app-image.sh
+      - run: docker build apps/sample-app -t "$(terraform -chdir=providers/aws output -raw repository_url)"
+      - run: ./providers/aws/scripts/push-app-image.sh "$(terraform -chdir=providers/aws output -raw repository_url)"
       - run: terraform output
         working-directory: providers/aws
