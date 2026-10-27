@@ -18,3 +18,13 @@ module "vpc" {
   region       = var.region
   cluster_name = var.cluster_name
 }
+
+module "gke" {
+  source              = "./modules/gke"
+  region              = var.region
+  cluster_name        = var.cluster_name
+  network_id          = module.vpc.network_id
+  subnet_id           = module.vpc.subnet_id
+  pods_range_name     = module.vpc.pods_range_name
+  services_range_name = module.vpc.services_range_name
+}
