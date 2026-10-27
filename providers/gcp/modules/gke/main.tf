@@ -66,3 +66,9 @@ resource "google_project_iam_member" "node_pool" {
   role    = each.value
   member  = google_service_account.node_pool.member
 }
+
+resource "google_project_iam_member" "admin_user" {
+  project = data.google_project.current.project_id
+  role    = "roles/container.admin"
+  member  = "user:${var.admin_email}"
+}

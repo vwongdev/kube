@@ -22,3 +22,8 @@ variable "pods_range_name" {
 variable "services_range_name" {
   type = string
 }
+
+variable "admin_email" {
+  type        = string
+  description = "Email of the user granted administrator access to the cluster"
+}

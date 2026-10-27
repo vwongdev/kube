@@ -9,3 +9,7 @@ variable "region" {
 variable "cluster_name" {
   type = string
 }
+
+variable "admin_email" {
+  type = string
+}

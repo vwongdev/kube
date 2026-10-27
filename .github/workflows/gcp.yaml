@@ -38,7 +38,8 @@ jobs:
           terraform apply -auto-approve \
             -var-file="env/${{ matrix.environment }}.tfvars" \
             -var="project=${{ vars.GCP_PROJECT }}" \
-            -var="region=${{ vars.GCP_REGION }}"
+            -var="region=${{ vars.GCP_REGION }}" \
+            -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
       - run: terraform output
         working-directory: providers/gcp
