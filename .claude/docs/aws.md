@@ -32,7 +32,7 @@ Before using Terraform, run `bootstrap.yaml` via CloudFormation to create:
 - GitHub OIDC provider and CI/CD role
 - Route53 hosted zone and ACM certificate
 
-**Note:** Bootstrap must be run manually outside CI/CD for the first time.
+**Note:** Bootstrap must be run manually outside CI/CD for the first time with `providers/scripts/bootstrap.sh aws.<environment>`.
 
 ## Backend
 
@@ -45,6 +45,12 @@ Configure backend via environment variables or `terraform init -backend-config`.
 
 ## Scripts
 
+Shared scripts in `providers/scripts/` take a `<provider>.<environment>` argument (e.g. `aws.prod`) and read its entry from `providers/config.yaml`:
+- `bootstrap.sh` - Runs the first-time bootstrap outside CI/CD
+- `name-servers.sh` - Prints the DNS zone name servers to delegate at the registrar
+- `set-github-env.sh` - Prompts for the GitHub environment secrets and variables kept out of the repository
+
+Provider scripts in `providers/aws/scripts/`:
 - `assume-cluster-access-role.sh` - Assumes a cluster's access role for EKS access (cluster name argument, default `kube-cluster`)
 - `aws-env.sh` - Sets up AWS environment variables
 - `push-app-image.sh` - Pushes container images to ECR
