@@ -12,7 +12,7 @@ providers/gcp/
 ├── bootstrap/           # Terraform for initial setup, deployed via Infrastructure Manager
 └── modules/
     ├── vpc/              # VPC network, subnet with pod/service ranges, Cloud NAT
-    ├── gke/              # Zonal GKE Standard cluster, node pool, IAM access
+    ├── gke/              # Zonal GKE Standard cluster, Spot node pool, IAM access
     ├── artifact_registry/# Container registry with cleanup policies
     └── dns/              # Cloud DNS zone and Google-managed SSL certificate
 ```
