@@ -12,26 +12,28 @@ Directories are listed in deployment order.
 ## Providers
 ### k3d (Local / Self-Hosted)
 #### Prerequisites
-All dependencies can be installed via a Makefile task
-```sh
-make -f providers/k3d/Makefile mac-deps
-```
+- Docker
+- kubectl
+- Skaffold
+- k3d
 
-#### Usage
-Create k3d cluster:
-```sh
-make -f providers/k3d/Makefile k3d-create CLUSTER_NAME=cluster-name
-```
-
-Initialize local development environment:
-```sh
-make -f providers/k3d/Makefile skaffold-init
-```
-
-Start local development environment:
-```sh
-make -f providers/k3d/Makefile skaffold-dev
-```
+#### Setup
+1. Install the prerequisites on macOS:
+   ```sh
+   make -f providers/k3d/Makefile mac-deps
+   ```
+2. Create the cluster:
+   ```sh
+   make -f providers/k3d/Makefile k3d-create CLUSTER_NAME=cluster-name
+   ```
+3. Initialise the development environment:
+   ```sh
+   make -f providers/k3d/Makefile skaffold-init
+   ```
+4. Start the development environment:
+   ```sh
+   make -f providers/k3d/Makefile skaffold-dev
+   ```
 
 ### Amazon Web Services
 #### Prerequisites
