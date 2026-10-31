@@ -57,7 +57,12 @@ def increment_hit():
 
 class HitHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path != "/":
+        if self.path == "/":
+            self.send_response(200)
+            self.end_headers()
+            return
+
+        if self.path != "/app":
             self.send_error(404)
             return
 
