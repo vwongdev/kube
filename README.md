@@ -37,7 +37,7 @@ make -f providers/k3d/Makefile skaffold-dev
 #### Setup
 Requires the AWS CLI, GitHub CLI and [yq](https://github.com/mikefarah/yq), with credentials for the target account.
 
-1. Add an entry to [`providers/config.yaml`](providers/config.yaml)
+1. Add an entry to [`providers/config.yaml`](providers/config.yaml):
    ```yaml
    aws:
      prod:
@@ -47,15 +47,15 @@ Requires the AWS CLI, GitHub CLI and [yq](https://github.com/mikefarah/yq), with
        cluster_name: kube-cluster
        repository_name: kube
    ```
-2. Bootstrap the account. Only needed once; the workflow re-applies it afterwards
+2. Bootstrap the account. Only needed once; the workflow re-applies it afterwards:
    ```sh
    providers/scripts/bootstrap.sh aws.prod
    ```
-3. Set the GitHub environment secrets. `GH_TOKEN` needs read access to this repository
+3. Set the GitHub environment secrets. `GH_TOKEN` needs read access to this repository:
    ```sh
    providers/scripts/set-github-env.sh aws.prod
    ```
-4. Run the workflow. The first run halts until these name servers are added at the domain registrar
+4. Run the workflow. The first run halts until these name servers are added at the domain registrar:
    ```sh
    providers/scripts/name-servers.sh aws.prod
    ```
@@ -64,7 +64,7 @@ Requires the AWS CLI, GitHub CLI and [yq](https://github.com/mikefarah/yq), with
 #### Setup
 Requires the gcloud CLI, GitHub CLI and yq, and a project with billing linked.
 
-1. Add an entry to [`providers/config.yaml`](providers/config.yaml). Get the project number with `gcloud projects describe project-id --format='value(projectNumber)'`
+1. Add an entry to [`providers/config.yaml`](providers/config.yaml). Get the project number with `gcloud projects describe project-id --format='value(projectNumber)'`:
    ```yaml
    gcp:
      prod:
@@ -75,15 +75,15 @@ Requires the gcloud CLI, GitHub CLI and yq, and a project with billing linked.
        cluster_name: kube-cluster
        repository_name: kube
    ```
-2. Bootstrap the project. Only needed once; the workflow re-applies it afterwards
+2. Bootstrap the project. Only needed once; the workflow re-applies it afterwards:
    ```sh
    providers/scripts/bootstrap.sh gcp.prod
    ```
-3. Set the GitHub environment secrets and the admin email
+3. Set the GitHub environment secrets and the admin email:
    ```sh
    providers/scripts/set-github-env.sh gcp.prod
    ```
-4. Run the workflow. The first run halts until these name servers are added at the domain registrar
+4. Run the workflow. The first run halts until these name servers are added at the domain registrar:
    ```sh
    providers/scripts/name-servers.sh gcp.prod
    ```
