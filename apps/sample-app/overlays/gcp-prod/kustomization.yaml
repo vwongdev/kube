@@ -11,10 +11,10 @@ patches:
     patch: |-
       - op: add
         path: /spec/rules/0/host
-        value: api.gcp.vwong.dev
+        value: gcp.vwong.dev
       - op: add
         path: /metadata/annotations/ingress.gcp.kubernetes.io~1pre-shared-cert
-        value: api-gcp-vwong-dev-cert
+        value: gcp-vwong-dev-cert
 
 images:
   - name: app
