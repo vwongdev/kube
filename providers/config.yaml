@@ -1,0 +1,18 @@
+# Deployment configuration read by the provider workflows, keyed by provider then environment.
+# Identifiers are quoted so they stay strings.
+aws:
+  prod:
+    account: "788455525284"
+    region: us-east-1
+    domain: api.vwong.dev
+    cluster_name: kube-cluster
+    repository_name: kube
+
+gcp:
+  prod:
+    project: vwongdev-kube
+    project_number: "419124387654"
+    region: us-east1
+    domain: gcp.vwong.dev
+    cluster_name: kube-cluster
+    repository_name: kube

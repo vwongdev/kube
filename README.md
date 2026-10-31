@@ -56,15 +56,18 @@ The public Route 53 zone for the API domain is created by Terraform. The first w
 terraform -chdir=providers/aws output route53_name_servers
 ```
 
-Running the workflow requires setting the following configuration variables in the deployment environment
-```sh
-ENV=prod
-gh variable set AWS_ACCOUNT --env "$ENV" --body 123456789012
-gh variable set AWS_REGION --env "$ENV" --body us-east-1
-gh variable set API_DOMAIN --env "$ENV" --body api.example.com
+The workflow reads its configuration from [`providers/config.yaml`](providers/config.yaml), keyed by provider and then environment. Each GitHub deployment environment needs a matching entry
+```yaml
+aws:
+  prod:
+    account: "123456789012"
+    region: us-east-1
+    domain: api.example.com
+    cluster_name: kube-cluster
+    repository_name: kube
 ```
 
-It also requires the following secret, which ArgoCD uses to read the manifests in this repository. A personal access token with read access to the repository contents is sufficient
+It also requires the following secret in the deployment environment, which ArgoCD uses to read the manifests in this repository. A personal access token with read access to the repository contents is sufficient
 ```sh
 gh secret set GH_TOKEN --env "$ENV"
 ```
@@ -102,12 +105,19 @@ The public Cloud DNS zone for the API domain is created by Terraform. The first 
 terraform -chdir=providers/gcp output dns_name_servers
 ```
 
-Running the workflow requires setting the following configuration variables in the deployment environment, alongside the `GH_TOKEN` secret above
+The workflow reads its configuration from [`providers/config.yaml`](providers/config.yaml) as for AWS. The project number can be read with `gcloud projects describe project-id --format='value(projectNumber)'`
+```yaml
+gcp:
+  prod:
+    project: project-id
+    project_number: "123456789012"
+    region: us-east1
+    domain: api.gcp.example.com
+    cluster_name: kube-cluster
+    repository_name: kube
+```
+
+The admin email is kept out of the repository as a configuration variable in the deployment environment, alongside the `GH_TOKEN` secret above
 ```sh
-ENV=prod
-gh variable set GCP_PROJECT --env "$ENV" --body project-id
-gh variable set GCP_PROJECT_NUMBER --env "$ENV" --body "$(gcloud projects describe project-id --format='value(projectNumber)')"
-gh variable set GCP_REGION --env "$ENV" --body us-east1
-gh variable set GCP_API_DOMAIN --env "$ENV" --body api.gcp.example.com
-gh variable set GCP_ADMIN_EMAIL --env "$ENV" --body admin@example.com
+gh variable set GCP_ADMIN_EMAIL --env prod --body admin@example.com
 ```

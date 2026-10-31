@@ -10,7 +10,6 @@ providers/gcp/
 ├── variables.tf         # Input variables (project, region, domain, admin email)
 ├── outputs.tf           # Output values
 ├── bootstrap/           # Terraform for initial setup, deployed via Infrastructure Manager
-├── env/                 # Per-environment variables (cluster and repository names)
 └── modules/
     ├── vpc/              # VPC network, subnet with pod/service ranges, Cloud NAT
     ├── gke/              # GKE Standard cluster, node pool, IAM access
@@ -38,11 +37,15 @@ Before using Terraform, deploy `bootstrap/` via Infrastructure Manager (Google's
 
 - `push-app-image.sh` - Pushes container images to Artifact Registry
 
+## Configuration
+
+The workflow reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `gcp.<environment>` and passes them to Terraform as `-var` flags. The admin email stays a GitHub environment variable (`GCP_ADMIN_EMAIL`) to keep it out of the public repository.
+
 ## Usage
 
 ```bash
 terraform init -backend-config="bucket=tf-state-bucket-<project>" -backend-config="prefix=prod"
 
-terraform apply -var-file="env/prod.tfvars" -var="project=<project>" -var="region=us-east1" \
-  -var="domain=api.gcp.example.com" -var="admin_email=admin@example.com"
+terraform apply -var="project=<project>" -var="region=us-east1" -var="domain=api.gcp.example.com" \
+  -var="cluster_name=kube-cluster" -var="repository_name=kube" -var="admin_email=admin@example.com"
 ```

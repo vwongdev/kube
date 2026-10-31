@@ -21,34 +21,37 @@ jobs:
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v5
+      - id: config
+        run: yq '.gcp.${{ matrix.environment }} | to_entries | .[] | .key + "=" + .value' providers/config.yaml >> "$GITHUB_OUTPUT"
       - uses: google-github-actions/auth@v3
         with:
-          workload_identity_provider: projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github/providers/github
-          service_account: primary-pipeline@${{ vars.GCP_PROJECT }}.iam.gserviceaccount.com
+          workload_identity_provider: projects/${{ steps.config.outputs.project_number }}/locations/global/workloadIdentityPools/github/providers/github
+          service_account: primary-pipeline@${{ steps.config.outputs.project }}.iam.gserviceaccount.com
       - uses: google-github-actions/setup-gcloud@v3
         with:
           install_components: gke-gcloud-auth-plugin
       # The deployment location only holds Infrastructure Manager metadata; resources use the input region
       - run: |
           gcloud infra-manager deployments apply \
-            projects/${{ vars.GCP_PROJECT }}/locations/us-central1/deployments/bootstrap \
-            --service-account projects/${{ vars.GCP_PROJECT }}/serviceAccounts/infra-manager@${{ vars.GCP_PROJECT }}.iam.gserviceaccount.com \
+            projects/${{ steps.config.outputs.project }}/locations/us-central1/deployments/bootstrap \
+            --service-account projects/${{ steps.config.outputs.project }}/serviceAccounts/infra-manager@${{ steps.config.outputs.project }}.iam.gserviceaccount.com \
             --local-source providers/gcp/bootstrap \
-            --input-values project=${{ vars.GCP_PROJECT }},region=${{ vars.GCP_REGION }},org_name=${{ github.repository_owner }},org_id=${{ github.repository_owner_id }},repo_name=${{ github.event.repository.name }},repo_id=${{ github.repository_id }}
+            --input-values project=${{ steps.config.outputs.project }},region=${{ steps.config.outputs.region }},org_name=${{ github.repository_owner }},org_id=${{ github.repository_owner_id }},repo_name=${{ github.event.repository.name }},repo_id=${{ github.repository_id }}
       - run: |
           terraform init \
-            -backend-config="bucket=tf-state-bucket-${{ vars.GCP_PROJECT }}" \
+            -backend-config="bucket=tf-state-bucket-${{ steps.config.outputs.project }}" \
             -backend-config="prefix=${{ matrix.environment }}"
         working-directory: providers/gcp
       - run: |
           terraform apply -auto-approve \
-            -var-file="env/${{ matrix.environment }}.tfvars" \
-            -var="project=${{ vars.GCP_PROJECT }}" \
-            -var="region=${{ vars.GCP_REGION }}" \
-            -var="domain=${{ vars.GCP_API_DOMAIN }}" \
+            -var="project=${{ steps.config.outputs.project }}" \
+            -var="region=${{ steps.config.outputs.region }}" \
+            -var="domain=${{ steps.config.outputs.domain }}" \
+            -var="cluster_name=${{ steps.config.outputs.cluster_name }}" \
+            -var="repository_name=${{ steps.config.outputs.repository_name }}" \
             -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
-      - run: gcloud container clusters get-credentials "$(terraform -chdir=providers/gcp output -raw cluster_name)" --region ${{ vars.GCP_REGION }}
+      - run: gcloud container clusters get-credentials "$(terraform -chdir=providers/gcp output -raw cluster_name)" --region ${{ steps.config.outputs.region }}
       - run: sh bootstrap/install-argocd.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml

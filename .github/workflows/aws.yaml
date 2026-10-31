@@ -21,11 +21,13 @@ jobs:
     environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v5
+      - id: config
+        run: yq '.aws.${{ matrix.environment }} | to_entries | .[] | .key + "=" + .value' providers/config.yaml >> "$GITHUB_OUTPUT"
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/PrimaryPipelineRole
+          role-to-assume: arn:aws:iam::${{ steps.config.outputs.account }}:role/PrimaryPipelineRole
           role-session-name: github-workflows-session
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ steps.config.outputs.region }}
       - name: Install deployment dependencies
         run: |
           curl --silent --location "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
@@ -38,18 +40,19 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM
       - run: |
           terraform init \
-            -backend-config="bucket=tf-state-bucket-${{ vars.AWS_ACCOUNT }}" \
+            -backend-config="bucket=tf-state-bucket-${{ steps.config.outputs.account }}" \
             -backend-config="key=${{ matrix.environment }}/terraform.tfstate" \
-            -backend-config="region=${{ vars.AWS_REGION }}" \
+            -backend-config="region=${{ steps.config.outputs.region }}" \
             -backend-config="dynamodb_table=tf-state-table"
         working-directory: providers/aws
       - run: |
           terraform apply -auto-approve \
-            -var-file="env/${{ matrix.environment }}.tfvars" \
-            -var="region=${{ vars.AWS_REGION }}" \
-            -var="domain=${{ vars.API_DOMAIN }}"
+            -var="region=${{ steps.config.outputs.region }}" \
+            -var="domain=${{ steps.config.outputs.domain }}" \
+            -var="cluster_name=${{ steps.config.outputs.cluster_name }}" \
+            -var="repository_name=${{ steps.config.outputs.repository_name }}"
         working-directory: providers/aws
-      - run: aws eks update-kubeconfig --name "$(terraform -chdir=providers/aws output -raw cluster_name)" --region ${{ vars.AWS_REGION }}
+      - run: aws eks update-kubeconfig --name "$(terraform -chdir=providers/aws output -raw cluster_name)" --region ${{ steps.config.outputs.region }}
       - run: sh bootstrap/install-argocd.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml
