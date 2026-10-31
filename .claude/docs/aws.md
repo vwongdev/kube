@@ -49,6 +49,10 @@ Configure backend via environment variables or `terraform init -backend-config`.
 - `aws-env.sh` - Sets up AWS environment variables
 - `push-app-image.sh` - Pushes container images to ECR
 
+## Configuration
+
+The workflow reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `aws.<environment>` and passes them to Terraform as `-var` flags.
+
 ## Usage
 
 ```bash
@@ -56,8 +60,8 @@ Configure backend via environment variables or `terraform init -backend-config`.
 terraform init
 
 # Plan changes
-terraform plan -var="region=us-east-1" -var="domain=example.com"
+terraform plan -var="region=us-east-1" -var="domain=example.com" -var="cluster_name=kube-cluster" -var="repository_name=kube"
 
 # Apply changes
-terraform apply -var="region=us-east-1" -var="domain=example.com"
+terraform apply -var="region=us-east-1" -var="domain=example.com" -var="cluster_name=kube-cluster" -var="repository_name=kube"
 ```
