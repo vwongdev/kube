@@ -2,7 +2,7 @@ data "google_project" "current" {}
 
 resource "google_container_cluster" "main" {
   name     = var.cluster_name
-  location = var.region
+  location = var.zone
 
   network    = var.network_id
   subnetwork = var.subnet_id
@@ -34,7 +34,6 @@ resource "google_container_node_pool" "node_pool" {
   cluster  = google_container_cluster.main.id
   location = google_container_cluster.main.location
 
-  # Per zone, so a regional cluster runs three nodes initially
   initial_node_count = 1
   autoscaling {
     min_node_count = 1

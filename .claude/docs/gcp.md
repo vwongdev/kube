@@ -7,12 +7,12 @@ This project uses Terraform to manage Google Cloud infrastructure with a modular
 ```
 providers/gcp/
 ├── main.tf              # Root module orchestrating all resources
-├── variables.tf         # Input variables (project, region, domain, admin email)
+├── variables.tf         # Input variables (project, region, zone, domain, admin email)
 ├── outputs.tf           # Output values
 ├── bootstrap/           # Terraform for initial setup, deployed via Infrastructure Manager
 └── modules/
     ├── vpc/              # VPC network, subnet with pod/service ranges, Cloud NAT
-    ├── gke/              # GKE Standard cluster, node pool, IAM access
+    ├── gke/              # Zonal GKE Standard cluster, node pool, IAM access
     ├── artifact_registry/# Container registry with cleanup policies
     └── dns/              # Cloud DNS zone and Google-managed SSL certificate
 ```
@@ -52,6 +52,6 @@ The workflow reads per-environment values (account/project, region, domain, clus
 ```bash
 terraform init -backend-config="bucket=tf-state-bucket-<project>" -backend-config="prefix=prod"
 
-terraform apply -var="project=<project>" -var="region=us-east1" -var="domain=api.gcp.example.com" \
+terraform apply -var="project=<project>" -var="region=us-east1" -var="zone=us-east1-b" -var="domain=api.gcp.example.com" \
   -var="cluster_name=kube-cluster" -var="repository_name=kube" -var="admin_email=admin@example.com"
 ```
