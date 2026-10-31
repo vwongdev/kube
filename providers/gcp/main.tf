@@ -21,7 +21,7 @@ module "vpc" {
 
 module "gke" {
   source              = "./modules/gke"
-  region              = var.region
+  zone                = var.zone
   cluster_name        = var.cluster_name
   network_id          = module.vpc.network_id
   subnet_id           = module.vpc.subnet_id

@@ -46,12 +46,13 @@ jobs:
           terraform apply -auto-approve \
             -var="project=${{ steps.config.outputs.project }}" \
             -var="region=${{ steps.config.outputs.region }}" \
+            -var="zone=${{ steps.config.outputs.zone }}" \
             -var="domain=${{ steps.config.outputs.domain }}" \
             -var="cluster_name=${{ steps.config.outputs.cluster_name }}" \
             -var="repository_name=${{ steps.config.outputs.repository_name }}" \
             -var="admin_email=${{ vars.GCP_ADMIN_EMAIL }}"
         working-directory: providers/gcp
-      - run: gcloud container clusters get-credentials "$(terraform -chdir=providers/gcp output -raw cluster_name)" --region ${{ steps.config.outputs.region }}
+      - run: gcloud container clusters get-credentials "$(terraform -chdir=providers/gcp output -raw cluster_name)" --location ${{ steps.config.outputs.zone }}
       - run: sh bootstrap/install-argocd.sh
       - run: |
           sed -i "s|\$GH_TOKEN|${GH_TOKEN}|g" bootstrap/base/secret.yaml

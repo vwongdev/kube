@@ -80,6 +80,7 @@ Alternatively, install the packages listed in [`flake.nix`](flake.nix) manually.
        project: project-id
        project_number: "123456789012"
        region: us-east1
+       zone: us-east1-b
        domain: api.gcp.example.com
        cluster_name: kube-cluster
        repository_name: kube

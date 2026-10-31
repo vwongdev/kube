@@ -13,6 +13,7 @@ gcp:
     project: vwongdev-kube
     project_number: "419124387654"
     region: us-east1
+    zone: us-east1-b
     domain: gcp.vwong.dev
     cluster_name: kube-cluster
     repository_name: kube
