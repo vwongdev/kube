@@ -51,7 +51,8 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-  instance_types = ["t3.small"]
+  capacity_type  = "SPOT"
+  instance_types = ["t3.small", "t3a.small"]
 }
 
 resource "aws_launch_template" "eks_nodes" {
