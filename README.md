@@ -74,7 +74,7 @@ done
 Then deploy the bootstrap configuration. This must be run manually outside CI/CD for the first time. Infrastructure Manager rejects a source directory containing a local `.terraform` directory, so remove it first if `terraform init` was run there
 ```sh
 rm -rf providers/gcp/bootstrap/.terraform
-gcloud infra-manager deployments apply projects/project-id/locations/us-central1/deployments/bootstrap --project project-id --service-account projects/project-id/serviceAccounts/infra-manager@project-id.iam.gserviceaccount.com --local-source providers/gcp/bootstrap --input-values project=project-id,region=us-east1,org_name=org-name,repo_name=repo-name
+gcloud infra-manager deployments apply projects/project-id/locations/us-central1/deployments/bootstrap --project project-id --service-account projects/project-id/serviceAccounts/infra-manager@project-id.iam.gserviceaccount.com --local-source providers/gcp/bootstrap --input-values project=project-id,region=us-east1,org_name=org-name,org_id=org-id,repo_name=repo-name,repo_id=repo-id
 ```
 
 Once the deployment exists, subsequent runs for bootstrapping can be triggered via Github workflows.
