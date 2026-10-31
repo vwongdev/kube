@@ -34,9 +34,12 @@ make -f providers/k3d/Makefile skaffold-dev
 ```
 
 ### Amazon Web Services
-#### Setup
-Requires the AWS CLI, GitHub CLI and [yq](https://github.com/mikefarah/yq), with credentials for the target account.
+#### Prerequisites
+- AWS CLI, with credentials for the target account
+- GitHub CLI
+- [yq](https://github.com/mikefarah/yq)
 
+#### Setup
 1. Add an entry to [`providers/config.yaml`](providers/config.yaml):
    ```yaml
    aws:
@@ -61,9 +64,13 @@ Requires the AWS CLI, GitHub CLI and [yq](https://github.com/mikefarah/yq), with
    ```
 
 ### Google Cloud
-#### Setup
-Requires the gcloud CLI, GitHub CLI and yq, and a project with billing linked.
+#### Prerequisites
+- Project with billing linked
+- gcloud CLI
+- GitHub CLI
+- yq
 
+#### Setup
 1. Add an entry to [`providers/config.yaml`](providers/config.yaml). Get the project number with `gcloud projects describe project-id --format='value(projectNumber)'`:
    ```yaml
    gcp:
