@@ -9,37 +9,40 @@ Directories are listed in deployment order.
 3. [`core/`](core): Cluster components such as operators and controllers, synced by ArgoCD.
 4. [`apps/`](apps): Workloads deployed by ArgoCD, one directory per app.
 
+## Prerequisites
+The tools each provider needs are installed automatically with:
+- [Nix](https://nixos.org/download) with flakes enabled
+- [direnv](https://direnv.net) hooked into your shell
+
+Load the tools on entering the repository:
+```sh
+direnv allow
+```
+
+Alternatively, install the packages listed in [`flake.nix`](flake.nix) manually.
+
 ## Providers
 ### k3d (Local / Self-Hosted)
 #### Prerequisites
-- Docker
-- kubectl
-- Skaffold
-- k3d
+- Running Docker daemon, such as Docker Desktop or Colima
 
 #### Setup
-1. Install the prerequisites on macOS:
-   ```sh
-   make -f providers/k3d/Makefile mac-deps
-   ```
-2. Create the cluster:
+1. Create the cluster:
    ```sh
    make -f providers/k3d/Makefile k3d-create CLUSTER_NAME=cluster-name
    ```
-3. Initialise the development environment:
+2. Initialise the development environment:
    ```sh
    make -f providers/k3d/Makefile skaffold-init
    ```
-4. Start the development environment:
+3. Start the development environment:
    ```sh
    make -f providers/k3d/Makefile skaffold-dev
    ```
 
 ### Amazon Web Services
 #### Prerequisites
-- AWS CLI, with credentials for the target account
-- GitHub CLI
-- [yq](https://github.com/mikefarah/yq)
+- Credentials for the target account
 
 #### Setup
 1. Add an entry to [`providers/config.yaml`](providers/config.yaml):
@@ -68,9 +71,6 @@ Directories are listed in deployment order.
 ### Google Cloud
 #### Prerequisites
 - Project with billing linked
-- gcloud CLI
-- GitHub CLI
-- yq
 
 #### Setup
 1. Add an entry to [`providers/config.yaml`](providers/config.yaml). Get the project number with `gcloud projects describe project-id --format='value(projectNumber)'`:
