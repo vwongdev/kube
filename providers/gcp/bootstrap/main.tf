@@ -43,7 +43,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "google.subject"       = "assertion.sub"
     "attribute.repository" = "assertion.repository"
   }
-  attribute_condition = "assertion.sub.startsWith('repo:${var.org_name}/${var.repo_name}:environment:')"
+  attribute_condition = "assertion.sub.startsWith('repo:${var.org_name}@${var.org_id}/${var.repo_name}@${var.repo_id}:environment:')"
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
