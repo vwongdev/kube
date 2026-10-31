@@ -38,20 +38,8 @@ jobs:
             --template-file providers/aws/bootstrap.yaml \
             --parameter-overrides OrgName=${{ github.repository_owner }} OrgId=${{ github.repository_owner_id }} RepoName=${{ github.event.repository.name }} RepoId=${{ github.repository_id }} \
             --capabilities CAPABILITY_NAMED_IAM
-      - run: |
-          terraform init \
-            -backend-config="bucket=tf-state-bucket-${{ steps.config.outputs.account }}" \
-            -backend-config="key=${{ matrix.environment }}/terraform.tfstate" \
-            -backend-config="region=${{ steps.config.outputs.region }}" \
-            -backend-config="dynamodb_table=tf-state-table"
-        working-directory: providers/aws
-      - run: |
-          terraform apply -auto-approve \
-            -var="region=${{ steps.config.outputs.region }}" \
-            -var="domain=${{ steps.config.outputs.domain }}" \
-            -var="cluster_name=${{ steps.config.outputs.cluster_name }}" \
-            -var="repository_name=${{ steps.config.outputs.repository_name }}"
-        working-directory: providers/aws
+      - run: providers/scripts/terraform-init.sh aws.${{ matrix.environment }}
+      - run: providers/scripts/terraform.sh aws.${{ matrix.environment }} apply -auto-approve
       - run: aws eks update-kubeconfig --name "$(terraform -chdir=providers/aws output -raw cluster_name)" --region ${{ steps.config.outputs.region }}
       - run: sh bootstrap/install-argocd.sh
       - run: |

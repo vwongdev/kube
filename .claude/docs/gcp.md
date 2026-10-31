@@ -39,19 +39,20 @@ Shared scripts in `providers/scripts/` take a `<provider>.<environment>` argumen
 - `bootstrap.sh` - Runs the first-time bootstrap outside CI/CD
 - `name-servers.sh` - Prints the DNS zone name servers to delegate at the registrar
 - `set-github-env.sh` - Prompts for the GitHub environment secrets and variables kept out of the repository
+- `terraform-init.sh` - Initialises Terraform against the environment's remote state (used by the workflow)
+- `terraform.sh` - Runs a Terraform command such as `plan` or `apply` with the environment's variables (used by the workflow)
 
 Provider scripts in `providers/gcp/scripts/`:
 - `push-app-image.sh` - Pushes container images to Artifact Registry
 
 ## Configuration
 
-The workflow reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `gcp.<environment>` and passes them to Terraform as `-var` flags. The admin email stays a GitHub environment variable (`GCP_ADMIN_EMAIL`) to keep it out of the public repository.
+`terraform.sh` reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `gcp.<environment>` and passes them to Terraform as `-var` flags. The admin email stays a GitHub environment variable (`GCP_ADMIN_EMAIL`) to keep it out of the public repository; export it before running `terraform.sh` locally.
 
 ## Usage
 
 ```bash
-terraform init -backend-config="bucket=tf-state-bucket-<project>" -backend-config="prefix=prod"
+providers/scripts/terraform-init.sh gcp.prod
 
-terraform apply -var="project=<project>" -var="region=us-east1" -var="zone=us-east1-b" -var="domain=api.gcp.example.com" \
-  -var="cluster_name=kube-cluster" -var="repository_name=kube" -var="admin_email=admin@example.com"
+GCP_ADMIN_EMAIL=admin@example.com providers/scripts/terraform.sh gcp.prod plan
 ```
