@@ -23,9 +23,6 @@ k3d clusters are created with:
 - `k3d-create` - Creates a new k3d cluster (default goal)
 - `k3d-destroy` - Deletes the cluster and removes `.cluster_created`
 
-### Dependencies
-- `mac-deps` - Installs required tools via Homebrew (docker, kubernetes-cli, skaffold, k3d)
-
 ### Development
 - `skaffold-init` - Initializes Skaffold configuration
 - `skaffold-dev` - Runs Skaffold in development mode (build, deploy, watch)
@@ -33,9 +30,6 @@ k3d clusters are created with:
 ## Usage
 
 ```bash
-# Install dependencies (macOS)
-make -f providers/k3d/Makefile mac-deps
-
 # Create cluster with custom name
 make -f providers/k3d/Makefile k3d-create CLUSTER_NAME=my-cluster AGENTS=2
 

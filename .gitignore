@@ -14,4 +14,7 @@ crash.log
 *.plan
 
 # Ignore .terraform directory
-.terraform/ 
+.terraform/
+
+# direnv cache
+.direnv/
