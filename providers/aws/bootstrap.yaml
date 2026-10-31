@@ -6,9 +6,15 @@ Parameters:
   OrgName:
     Type: String
     Description: Name of the organization.
+  OrgId:
+    Type: String
+    Description: ID of the organization.
   RepoName:
     Type: String
     Description: Name of the repository.
+  RepoId:
+    Type: String
+    Description: ID of the repository.
 
 Resources:
   GitHubOIDCProvider:
@@ -33,7 +39,7 @@ Resources:
             Action: sts:AssumeRoleWithWebIdentity
             Condition:
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub "repo:${OrgName}/${RepoName}:environment:*"
+                token.actions.githubusercontent.com:sub: !Sub "repo:${OrgName}@${OrgId}/${RepoName}@${RepoId}:environment:*"
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
       ManagedPolicyArns:

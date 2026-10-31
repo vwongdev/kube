@@ -30,7 +30,7 @@ jobs:
           aws cloudformation deploy \
             --stack-name bootstrap \
             --template-file providers/aws/bootstrap.yaml \
-            --parameter-overrides OrgName=${{ github.repository_owner }} RepoName=${{ github.event.repository.name }} \
+            --parameter-overrides OrgName=${{ github.repository_owner }} OrgId=${{ github.repository_owner_id }} RepoName=${{ github.event.repository.name }} RepoId=${{ github.repository_id }} \
             --capabilities CAPABILITY_NAMED_IAM
       - run: |
           terraform init \
