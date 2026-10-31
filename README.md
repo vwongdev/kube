@@ -56,16 +56,17 @@ The public Route 53 zone for the API domain is created by Terraform. The first w
 terraform -chdir=providers/aws output route53_name_servers
 ```
 
-Running the workflow requires setting the following environment configuration variables in the repository settings
-```
-AWS_ACCOUNT=123456789012
-AWS_REGION=us-east-1
-API_DOMAIN=api.example.com
+Running the workflow requires setting the following configuration variables in the deployment environment
+```sh
+ENV=prod
+gh variable set AWS_ACCOUNT --env "$ENV" --body 123456789012
+gh variable set AWS_REGION --env "$ENV" --body us-east-1
+gh variable set API_DOMAIN --env "$ENV" --body api.example.com
 ```
 
 It also requires the following secret, which ArgoCD uses to read the manifests in this repository. A personal access token with read access to the repository contents is sufficient
-```
-GH_TOKEN=github_pat_xxxxxxxxxxxx
+```sh
+gh secret set GH_TOKEN --env "$ENV"
 ```
 
 ### Google Cloud
@@ -101,11 +102,12 @@ The public Cloud DNS zone for the API domain is created by Terraform. The first 
 terraform -chdir=providers/gcp output dns_name_servers
 ```
 
-Running the workflow requires setting the following environment configuration variables in the repository settings, alongside the `GH_TOKEN` secret above
-```
-GCP_PROJECT=project-id
-GCP_PROJECT_NUMBER=123456789012
-GCP_REGION=us-east1
-GCP_API_DOMAIN=api.gcp.example.com
-GCP_ADMIN_EMAIL=admin@example.com
+Running the workflow requires setting the following configuration variables in the deployment environment, alongside the `GH_TOKEN` secret above
+```sh
+ENV=prod
+gh variable set GCP_PROJECT --env "$ENV" --body project-id
+gh variable set GCP_PROJECT_NUMBER --env "$ENV" --body "$(gcloud projects describe project-id --format='value(projectNumber)')"
+gh variable set GCP_REGION --env "$ENV" --body us-east1
+gh variable set GCP_API_DOMAIN --env "$ENV" --body api.gcp.example.com
+gh variable set GCP_ADMIN_EMAIL --env "$ENV" --body admin@example.com
 ```
