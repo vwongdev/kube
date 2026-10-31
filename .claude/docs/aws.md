@@ -41,7 +41,7 @@ Terraform state is stored in S3 with DynamoDB for locking:
 backend "s3" {}
 ```
 
-Configure backend via environment variables or `terraform init -backend-config`.
+Initialise the backend with `providers/scripts/terraform-init.sh aws.<environment>`.
 
 ## Scripts
 
@@ -49,6 +49,8 @@ Shared scripts in `providers/scripts/` take a `<provider>.<environment>` argumen
 - `bootstrap.sh` - Runs the first-time bootstrap outside CI/CD
 - `name-servers.sh` - Prints the DNS zone name servers to delegate at the registrar
 - `set-github-env.sh` - Prompts for the GitHub environment secrets and variables kept out of the repository
+- `terraform-init.sh` - Initialises Terraform against the environment's remote state (used by the workflow)
+- `terraform.sh` - Runs a Terraform command such as `plan` or `apply` with the environment's variables (used by the workflow)
 
 Provider scripts in `providers/aws/scripts/`:
 - `assume-cluster-access-role.sh` - Assumes a cluster's access role for EKS access (cluster name argument, default `kube-cluster`)
@@ -57,17 +59,17 @@ Provider scripts in `providers/aws/scripts/`:
 
 ## Configuration
 
-The workflow reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `aws.<environment>` and passes them to Terraform as `-var` flags.
+`terraform.sh` reads per-environment values (account/project, region, domain, cluster and repository names) from `providers/config.yaml` under `aws.<environment>` and passes them to Terraform as `-var` flags.
 
 ## Usage
 
 ```bash
 # Initialize Terraform
-terraform init
+providers/scripts/terraform-init.sh aws.prod
 
 # Plan changes
-terraform plan -var="region=us-east-1" -var="domain=example.com" -var="cluster_name=kube-cluster" -var="repository_name=kube"
+providers/scripts/terraform.sh aws.prod plan
 
 # Apply changes
-terraform apply -var="region=us-east-1" -var="domain=example.com" -var="cluster_name=kube-cluster" -var="repository_name=kube"
+providers/scripts/terraform.sh aws.prod apply
 ```
