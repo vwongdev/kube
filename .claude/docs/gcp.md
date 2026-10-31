@@ -25,7 +25,7 @@ Before using Terraform, deploy `bootstrap/` via Infrastructure Manager (Google's
 - Workload Identity pool and GitHub OIDC provider
 - `primary-pipeline` service account impersonated by GitHub workflows
 
-**Note:** The `infra-manager` service account and the first deployment must be created manually outside CI/CD (see README). The workflow re-applies the deployment on each run.
+**Note:** The `infra-manager` service account and the first deployment must be created manually outside CI/CD with `providers/scripts/bootstrap.sh gcp.<environment>`. The workflow re-applies the deployment on each run.
 
 ## Differences from AWS
 
@@ -35,6 +35,12 @@ Before using Terraform, deploy `bootstrap/` via Infrastructure Manager (Google's
 
 ## Scripts
 
+Shared scripts in `providers/scripts/` take a `<provider>.<environment>` argument (e.g. `gcp.prod`) and read its entry from `providers/config.yaml`:
+- `bootstrap.sh` - Runs the first-time bootstrap outside CI/CD
+- `name-servers.sh` - Prints the DNS zone name servers to delegate at the registrar
+- `set-github-env.sh` - Prompts for the GitHub environment secrets and variables kept out of the repository
+
+Provider scripts in `providers/gcp/scripts/`:
 - `push-app-image.sh` - Pushes container images to Artifact Registry
 
 ## Configuration
