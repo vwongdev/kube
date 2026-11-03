@@ -47,6 +47,7 @@ Initialise the backend with `providers/scripts/terraform-init.sh aws.<environmen
 
 Shared scripts in `providers/scripts/` take a `<provider>.<environment>` argument (e.g. `aws.prod`) and read its entry from `providers/config.yaml`:
 - `bootstrap.sh` - Runs the first-time bootstrap outside CI/CD
+- `kubeconfig.sh` - Adds the cluster to the local kubeconfig using the current credentials
 - `name-servers.sh` - Prints the DNS zone name servers to delegate at the registrar
 - `set-github-env.sh` - Prompts for the GitHub environment secrets and variables kept out of the repository
 - `terraform-init.sh` - Initialises Terraform against the environment's remote state (used by the workflow)
