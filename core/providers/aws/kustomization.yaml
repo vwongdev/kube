@@ -5,3 +5,5 @@ resources:
   - ../../base
   - ./load-balancer-controller.yaml
   - ./external-dns-controller.yaml
+  - ./gateway-api-crds.yaml
+  - ./gateway.yaml
