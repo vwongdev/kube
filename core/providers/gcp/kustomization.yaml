@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ../../base
   - ./external-dns-controller.yaml
+  - ./gateway.yaml

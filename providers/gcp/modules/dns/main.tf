@@ -32,3 +32,36 @@ data "external" "actual_ns" {
     "echo \"{\\\"nameservers\\\": \\\"$(dig +short NS ${var.domain} | tr '\\n' ',' | sed 's/,$//')\\\"}\""
   ]
 }
+
+resource "google_certificate_manager_dns_authorization" "auth" {
+  name   = "${replace(var.domain, ".", "-")}-dns-auth"
+  domain = var.domain
+}
+
+resource "google_dns_record_set" "auth" {
+  managed_zone = google_dns_managed_zone.hosted_zone.name
+  name         = google_certificate_manager_dns_authorization.auth.dns_resource_record[0].name
+  type         = google_certificate_manager_dns_authorization.auth.dns_resource_record[0].type
+  ttl          = 300
+  rrdatas      = [google_certificate_manager_dns_authorization.auth.dns_resource_record[0].data]
+}
+
+resource "google_certificate_manager_certificate" "cert" {
+  name = "${replace(var.domain, ".", "-")}-gateway-cert"
+
+  managed {
+    domains            = [var.domain, "*.${var.domain}"]
+    dns_authorizations = [google_certificate_manager_dns_authorization.auth.id]
+  }
+}
+
+resource "google_certificate_manager_certificate_map" "shared_gateway" {
+  name = "shared-gateway"
+}
+
+resource "google_certificate_manager_certificate_map_entry" "primary" {
+  name         = "primary"
+  map          = google_certificate_manager_certificate_map.shared_gateway.name
+  certificates = [google_certificate_manager_certificate.cert.id]
+  matcher      = "PRIMARY"
+}
