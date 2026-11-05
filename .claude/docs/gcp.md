@@ -14,7 +14,7 @@ providers/gcp/
     ├── vpc/              # VPC network, subnet with pod/service ranges, Cloud NAT
     ├── gke/              # Zonal GKE Standard cluster, Spot node pool, IAM access
     ├── artifact_registry/# Container registry with cleanup policies
-    └── dns/              # Cloud DNS zone and Google-managed SSL certificate
+    └── dns/              # Cloud DNS zone and Certificate Manager certificate map
 ```
 
 ## Bootstrap
@@ -29,9 +29,9 @@ Before using Terraform, deploy `bootstrap/` via Infrastructure Manager (Google's
 
 ## Differences from AWS
 
-- No storage driver or Load Balancer Controller: GKE ships the Persistent Disk CSI driver and the `gce` Ingress controller
+- No storage driver or Load Balancer Controller: GKE ships the Persistent Disk CSI driver and the Gateway controller (enabled with `gateway_api_config`)
 - Workload Identity Federation for GKE replaces Pod Identity: IAM bindings target the Kubernetes service account principal directly
-- Ingress references the Terraform-managed certificate via the `ingress.gcp.kubernetes.io/pre-shared-cert` annotation
+- The shared Gateway references the Terraform-managed certificate map via the `networking.gke.io/certmap: shared-gateway` annotation; its certificate covers the domain and its subdomains
 
 ## Scripts
 

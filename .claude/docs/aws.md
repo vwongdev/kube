@@ -22,7 +22,7 @@ providers/aws/
 1. **VPC** - Creates VPC with public/private subnets, NAT gateway, and routing
 2. **EKS** - Provisions EKS cluster with node groups, IAM roles, and access entries
 3. **ECR** - Sets up container registry with image scanning and lifecycle policies
-4. **Route53** - Manages DNS hosted zone and SSL certificate validation
+4. **Route53** - Manages DNS hosted zone and SSL certificate validation; the certificate covers the domain and its subdomains, so the shared gateway discovers it for any route hostname
 
 ## Bootstrap
 

@@ -14,7 +14,8 @@ providers/k3d/
 k3d clusters are created with:
 - 1 server node
 - Configurable agent nodes (default: 1)
-- Port forwarding: `8081:80@loadbalancer` for ingress traffic
+- Traefik disabled (`--disable=traefik`); Envoy Gateway serves the shared gateway instead
+- Port forwarding: `8081:80@loadbalancer` for gateway traffic
 - Cluster name stored in `.cluster_created` file
 
 ## Makefile Targets

@@ -34,6 +34,8 @@ bootstrap/
 - Bootstraps core infrastructure components
 - Points to `core/overlays/{environment}` paths
 - Uses automated sync with self-heal and prune
+- Skips dry run for resources whose CRDs are not yet installed (`SkipDryRunOnMissingResource=true`) and retries indefinitely with backoff from 30s up to 5m, so the sync converges once the CRDs exist
+- Resources that need CRDs installed by another Application (e.g. Gateway API resources) go in sync wave 1 (`argocd.argoproj.io/sync-wave: "1"`), after the Applications in wave 0
 
 ### ApplicationSet (`apps.yaml`)
 - Auto-discovers the sample app in this repository's `apps/` only; add new apps to the dedicated manifests repository instead
@@ -48,6 +50,8 @@ bootstrap/
 - `cnpg.yaml` - CloudNativePG operator (Helm chart)
 - `load-balancer-controller.yaml` - AWS Load Balancer Controller (Helm chart)
 - `external-dns-controller.yaml` - External DNS Controller (Helm chart)
+- `gateway-api-crds.yaml` - Gateway API standard CRDs on AWS (`prune: false` so CRDs are never deleted)
+- `envoy-gateway.yaml` - Envoy Gateway on k3d (Helm chart, also installs the Gateway API CRDs)
 
 ## Configuration
 
