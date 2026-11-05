@@ -6,15 +6,13 @@ resources:
 
 patches:
   - target:
-      kind: Ingress
-      name: ingress
+      kind: HTTPRoute
+      name: route
     patch: |-
       - op: add
-        path: /spec/rules/0/host
-        value: gcp.vwong.dev
-      - op: add
-        path: /metadata/annotations/ingress.gcp.kubernetes.io~1pre-shared-cert
-        value: gcp-vwong-dev-cert
+        path: /spec/hostnames
+        value:
+          - gcp.vwong.dev
 
 images:
   - name: app

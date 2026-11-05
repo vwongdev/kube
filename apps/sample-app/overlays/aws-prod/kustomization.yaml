@@ -6,12 +6,13 @@ resources:
 
 patches:
   - target:
-      kind: Ingress
-      name: ingress
+      kind: HTTPRoute
+      name: route
     patch: |-
       - op: add
-        path: /spec/rules/0/host
-        value: api.vwong.dev
+        path: /spec/hostnames
+        value:
+          - api.vwong.dev
 
 images:
   - name: app

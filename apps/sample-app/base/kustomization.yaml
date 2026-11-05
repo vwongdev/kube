@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - app.yaml
   - db.yaml
-  - ingress.yaml
+  - route.yaml
