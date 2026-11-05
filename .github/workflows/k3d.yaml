@@ -29,7 +29,16 @@ jobs:
       # core only. The bootstrap ApplicationSet is deliberately not applied:
       # apps/*/overlays/k3d-dev carries no image mapping, so ArgoCD would
       # deploy the unresolvable app:latest and fight Skaffold for the Deployment.
+      # The first apply fails on the Gateway API resources until Envoy Gateway
+      # has installed their CRDs, so it is applied again once they exist.
+      - run: kubectl apply -k core/overlays/k3d-dev || true
+      - name: Wait for Envoy Gateway
+        run: |
+          timeout 300 bash -c 'until kubectl get crd gateways.gateway.networking.k8s.io > /dev/null 2>&1; do sleep 5; done'
+          kubectl wait --for=condition=established crd/gatewayclasses.gateway.networking.k8s.io crd/gateways.gateway.networking.k8s.io crd/httproutes.gateway.networking.k8s.io --timeout=60s
+          timeout 300 bash -c 'until kubectl wait --for=condition=available deployment --all --namespace envoy-gateway-system --timeout=60s; do sleep 5; done'
       - run: kubectl apply -k core/overlays/k3d-dev
+      - run: kubectl wait --for=condition=Programmed gateway/shared --namespace gateway --timeout=300s
       - name: Wait for CloudNativePG
         run: |
           timeout 300 bash -c 'until kubectl get crd clusters.postgresql.cnpg.io > /dev/null 2>&1; do sleep 5; done'
@@ -37,13 +46,13 @@ jobs:
           timeout 300 bash -c 'until kubectl wait --for=condition=available deployment --all --namespace cnpg-system --timeout=60s; do sleep 5; done'
       - run: skaffold run
         working-directory: apps/sample-app
-      - name: Verify the application responds through the ingress
+      - name: Verify the application responds through the gateway
         run: |
           timeout 120 bash -c 'until curl --silent --fail http://localhost:8081/app; do sleep 5; done'
       - name: Report cluster state
         if: failure()
         run: |
-          kubectl get all,applications.argoproj.io,clusters.postgresql.cnpg.io --all-namespaces
+          kubectl get all,applications.argoproj.io,clusters.postgresql.cnpg.io,gateways,httproutes --all-namespaces
           kubectl describe pods
       - run: make -f providers/k3d/Makefile k3d-destroy
         if: always()

@@ -13,6 +13,7 @@ k3d-destroy:
 .cluster_created:
 	@k3d cluster create $(CLUSTER_NAME) \
 		-p "8081:80@loadbalancer" \
+		--k3s-arg "--disable=traefik@server:0" \
 		--servers 1 \
 		--agents $(AGENTS) \
 		--wait \
