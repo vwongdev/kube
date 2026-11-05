@@ -20,7 +20,8 @@ bootstrap/
 ├── install-argocd.sh    # ArgoCD installer
 ├── base/
 │   ├── root.yaml        # Root application (bootstraps core infrastructure)
-│   ├── apps.yaml        # ApplicationSet (auto-discovers apps)
+│   ├── apps.yaml        # ApplicationSet (auto-discovers the sample app only)
+│   ├── apps-repository.yaml # ApplicationSet (auto-discovers apps in vwongdev/apps)
 │   └── secret.yaml      # Git repository credentials
 └── overlays/
     ├── aws-prod/         # Production environment patches
@@ -35,9 +36,13 @@ bootstrap/
 - Uses automated sync with self-heal and prune
 
 ### ApplicationSet (`apps.yaml`)
-- Automatically discovers applications from Git repository
+- Auto-discovers the sample app in this repository's `apps/` only; add new apps to the dedicated manifests repository instead
 - Uses directory-based generator to find `apps/*/overlays/{environment}` paths
 - Creates ArgoCD Applications dynamically for each app
+
+### ApplicationSet (`apps-repository.yaml`)
+- Same as `apps.yaml`, but discovers apps from the dedicated manifests repository [vwongdev/apps](https://github.com/vwongdev/apps)
+- Generated Application names must not clash with apps in this repository's `apps/`
 
 ### Individual Applications
 - `cnpg.yaml` - CloudNativePG operator (Helm chart)
