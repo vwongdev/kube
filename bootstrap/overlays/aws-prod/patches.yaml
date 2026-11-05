@@ -22,3 +22,16 @@ spec:
         revision: HEAD
         directories:
           - path: apps/*/overlays/aws-prod
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps-repository
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/vwongdev/apps.git
+        revision: HEAD
+        directories:
+          - path: apps/*/overlays/aws-prod
