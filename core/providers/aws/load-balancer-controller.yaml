@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'https://aws.github.io/eks-charts'
     chart: aws-load-balancer-controller
-    targetRevision: 1.11.0
+    targetRevision: 3.6.2
     helm:
       valuesObject:
         serviceAccount:
