@@ -63,7 +63,8 @@ Applications use automated sync with:
 
 ### Repository Access
 Git repository credentials are stored in `bootstrap/base/secret.yaml`:
-- Uses GitHub token (`$GH_TOKEN`) for private repository access
+- Credential template (`repo-creds`) matching every repository under `https://github.com/vwongdev`
+- Uses GitHub token (`$GH_TOKEN`) with read access to the organisation's repositories
 - Token is injected during deployment via CI/CD
 
 ## Environment-Specific Configuration

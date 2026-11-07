@@ -59,7 +59,7 @@ Alternatively, install the packages listed in [`flake.nix`](flake.nix) manually.
    ```sh
    providers/scripts/bootstrap.sh aws.prod
    ```
-3. Set the GitHub environment secrets. `GH_TOKEN` needs read access to this repository:
+3. Set the GitHub environment secrets. `GH_TOKEN` needs read access to all repositories in the `vwongdev` organisation:
    ```sh
    providers/scripts/set-github-env.sh aws.prod
    ```
