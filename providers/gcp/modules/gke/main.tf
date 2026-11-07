@@ -7,6 +7,9 @@ resource "google_container_cluster" "main" {
   network    = var.network_id
   subnetwork = var.subnet_id
 
+  # Dataplane V2 enforces NetworkPolicy; changing it recreates the cluster
+  datapath_provider = "ADVANCED_DATAPATH"
+
   remove_default_node_pool = true
   initial_node_count       = 1
 
