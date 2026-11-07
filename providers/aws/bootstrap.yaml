@@ -45,6 +45,44 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
 
+  # Lets every repository in the organisation push images, creating ECR repositories on first push
+  RegistryPushRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: RegistryPushRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringLike:
+                token.actions.githubusercontent.com:sub:
+                  - !Sub "repo:${OrgName}/*"
+                  - !Sub "repo:${OrgName}@${OrgId}/*"
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+      Policies:
+        - PolicyName: RegistryPush
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: ecr:GetAuthorizationToken
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:BatchGetImage
+                  - ecr:CompleteLayerUpload
+                  - ecr:CreateRepository
+                  - ecr:InitiateLayerUpload
+                  - ecr:PutImage
+                  - ecr:UploadLayerPart
+                Resource: !Sub "arn:aws:ecr:*:${AWS::AccountId}:repository/*"
+
   TerraformStateBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
