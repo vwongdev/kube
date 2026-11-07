@@ -8,3 +8,12 @@ spec:
     helm:
       valuesObject:
         txtOwnerId: kube-cluster
+---
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: secrets
+spec:
+  provider:
+    gcpsm:
+      projectID: vwongdev-kube

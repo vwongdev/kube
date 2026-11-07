@@ -24,6 +24,7 @@ resource "google_project_service" "services" {
     "artifactregistry.googleapis.com",
     "dns.googleapis.com",
     "certificatemanager.googleapis.com",
+    "secretmanager.googleapis.com",
   ])
 
   service            = each.value
