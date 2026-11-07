@@ -16,6 +16,7 @@ This project uses Kustomize to manage Kubernetes manifests with a three-layer hi
 1. **base/** - Contains the core Kubernetes resources (Deployments, Services, HTTPRoutes, etc.)
    - Foundation layer with no environment-specific configuration
    - HTTPRoutes attach to the shared Gateway `shared` in namespace `gateway`; overlays set `spec.hostnames`
+   - ExternalSecrets reference the ClusterSecretStore `secrets`, which has the same name and keys on every cluster, so they need no overlay patches
 
 2. **providers/** - Provider-specific layer that references `base/`
    - Customizes resources for specific infrastructure providers (AWS, k3d)
