@@ -7,3 +7,4 @@ resources:
   - ./external-dns-controller.yaml
   - ./gateway-api-crds.yaml
   - ./gateway.yaml
+  - ./secret-store.yaml
