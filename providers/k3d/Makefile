@@ -1,6 +1,7 @@
 CLUSTER_NAME ?= default
 AGENTS ?= 1
 USER_WORKING_DIR ?= .
+SECRET_STORE ?= $(dir $(lastword $(MAKEFILE_LIST)))secret-store.yaml
 
 .DEFAULT_GOAL := k3d-create
 
@@ -18,6 +19,10 @@ k3d-destroy:
 		--agents $(AGENTS) \
 		--wait \
 		&& echo $(CLUSTER_NAME) > .cluster_created
+
+# Apply the local secret store, kept out of git, once External Secrets Operator is running
+secret-store:
+	@kubectl apply -f $(SECRET_STORE)
 
 # Create and run Skaffold environment
 skaffold-init: skaffold.yaml
