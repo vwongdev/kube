@@ -24,6 +24,9 @@ k3d clusters are created with:
 - `k3d-create` - Creates a new k3d cluster (default goal)
 - `k3d-destroy` - Deletes the cluster and removes `.cluster_created`
 
+### Secrets
+- `secret-store` - Applies the gitignored `providers/k3d/secret-store.yaml` (copied from `secret-store.example.yaml`), an External Secrets Operator `fake` ClusterSecretStore named `secrets`; run once the operator is installed
+
 ### Development
 - `skaffold-init` - Initializes Skaffold configuration
 - `skaffold-dev` - Runs Skaffold in development mode (build, deploy, watch)
@@ -46,6 +49,7 @@ make -f providers/k3d/Makefile skaffold-dev
 - `CLUSTER_NAME` - Name of the k3d cluster (default: `default`)
 - `AGENTS` - Number of agent nodes (default: `1`)
 - `USER_WORKING_DIR` - Working directory (default: `.`)
+- `SECRET_STORE` - Local secret store file (default: `providers/k3d/secret-store.yaml`)
 
 ## Integration
 

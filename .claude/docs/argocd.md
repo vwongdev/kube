@@ -48,6 +48,7 @@ bootstrap/
 
 ### Individual Applications
 - `cnpg.yaml` - CloudNativePG operator (Helm chart)
+- `external-secrets.yaml` - External Secrets Operator (Helm chart); each provider adds the ClusterSecretStore `secrets` in sync wave 1, except k3d, whose store is applied locally outside ArgoCD
 - `load-balancer-controller.yaml` - AWS Load Balancer Controller (Helm chart)
 - `external-dns-controller.yaml` - External DNS Controller (Helm chart)
 - `gateway-api-crds.yaml` - Gateway API standard CRDs on AWS (`prune: false` so CRDs are never deleted)

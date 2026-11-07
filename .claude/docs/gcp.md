@@ -24,13 +24,16 @@ Before using Terraform, deploy `bootstrap/` via Infrastructure Manager (Google's
 - GCS bucket for Terraform state (versioned; GCS provides native locking)
 - Workload Identity pool and GitHub OIDC provider
 - `primary-pipeline` service account impersonated by GitHub workflows
+- Separate `github-registry` workload identity pool, restricted to the organisation's repositories, and the `registry-push` service account it impersonates to push images to Artifact Registry; a separate pool keeps those tokens from matching `primary-pipeline` bindings
 
 **Note:** The `infra-manager` service account and the first deployment must be created manually outside CI/CD with `providers/scripts/bootstrap.sh gcp.<environment>`. The workflow re-applies the deployment on each run.
 
 ## Differences from AWS
 
 - No storage driver or Load Balancer Controller: GKE ships the Persistent Disk CSI driver and the Gateway controller (enabled with `gateway_api_config`)
-- Workload Identity Federation for GKE replaces Pod Identity: IAM bindings target the Kubernetes service account principal directly
+- Workload Identity Federation for GKE replaces Pod Identity: IAM bindings target the Kubernetes service account principal directly (e.g. External Secrets Operator's read access to Secret Manager)
+- Dataplane V2 enforces NetworkPolicy; on EKS the managed VPC CNI addon does
+- Apps push images into the existing Artifact Registry repository, so nothing is created on first push as on ECR
 - The shared Gateway references the Terraform-managed certificate map via the `networking.gke.io/certmap: shared-gateway` annotation; its certificate covers the domain and its subdomains
 
 ## Scripts
