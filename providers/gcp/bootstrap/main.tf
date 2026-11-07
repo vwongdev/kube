@@ -70,6 +70,46 @@ resource "google_service_account_iam_member" "primary_pipeline_workload_identity
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.org_name}/${var.repo_name}"
 }
 
+# Separate pool for every repository in the organisation, so its tokens never match primary-pipeline bindings
+resource "google_iam_workload_identity_pool" "github_registry" {
+  workload_identity_pool_id = "github-registry"
+
+  depends_on = [google_project_service.services]
+}
+
+resource "google_iam_workload_identity_pool_provider" "github_registry" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github_registry.workload_identity_pool_id
+  workload_identity_pool_provider_id = "github"
+
+  attribute_mapping = {
+    "google.subject"                = "assertion.sub"
+    "attribute.repository_owner_id" = "assertion.repository_owner_id"
+  }
+  attribute_condition = "assertion.repository_owner_id == '${var.org_id}'"
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}
+
+resource "google_service_account" "registry_push" {
+  account_id = "registry-push"
+
+  depends_on = [google_project_service.services]
+}
+
+resource "google_project_iam_member" "registry_push" {
+  project = var.project
+  role    = "roles/artifactregistry.writer"
+  member  = google_service_account.registry_push.member
+}
+
+resource "google_service_account_iam_member" "registry_push_workload_identity" {
+  service_account_id = google_service_account.registry_push.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_registry.name}/attribute.repository_owner_id/${var.org_id}"
+}
+
 resource "google_storage_bucket" "terraform_state" {
   name                        = "tf-state-bucket-${var.project}"
   location                    = var.region
