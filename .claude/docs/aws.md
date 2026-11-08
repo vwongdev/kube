@@ -34,7 +34,7 @@ Before using Terraform, run `bootstrap.yaml` via CloudFormation to create:
 - S3 bucket for Terraform state (with encryption and versioning)
 - DynamoDB table for state locking
 - GitHub OIDC provider and CI/CD role
-- `RegistryPushRole` letting any repository in the organisation push images to ECR, creating repositories on first push
+- `RegistryPushRole` letting any repository in the organisation push images to ECR, creating repositories on first push; repositories push through the reusable `.github/workflows/publish-image.yaml`, which reads registry details from `providers/config.yaml`
 - Route53 hosted zone and ACM certificate
 
 **Note:** Bootstrap must be run manually outside CI/CD for the first time with `providers/scripts/bootstrap.sh aws.<environment>`.
