@@ -34,6 +34,14 @@ resource "google_container_cluster" "main" {
   gateway_api_config {
     channel = "CHANNEL_STANDARD"
   }
+
+  # GKE's default workload and kubelet metrics bill as Managed Prometheus samples
+  monitoring_config {
+    enable_components = ["SYSTEM_COMPONENTS"]
+    managed_prometheus {
+      enabled = false
+    }
+  }
 }
 
 resource "google_container_node_pool" "node_pool" {
