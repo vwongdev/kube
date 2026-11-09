@@ -122,5 +122,7 @@ resource "google_storage_bucket" "terraform_state" {
 
   lifecycle {
     prevent_destroy = true
+    # The bucket cannot move, so it stays in its original region when the cluster region changes
+    ignore_changes = [location]
   }
 }
