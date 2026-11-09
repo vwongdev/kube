@@ -16,5 +16,5 @@ patches:
 
 images:
   - name: app
-    newName: us-east1-docker.pkg.dev/vwongdev-kube/kube/sample-app
+    newName: us-west4-docker.pkg.dev/vwongdev-kube/kube/sample-app
     newTag: latest
