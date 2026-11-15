@@ -35,11 +35,11 @@ resource "google_container_cluster" "main" {
     channel = "CHANNEL_STANDARD"
   }
 
-  # GKE's default workload and kubelet metrics bill as Managed Prometheus samples
+  # Kubelet and cAdvisor scraping is set in the OperatorConfig, which allows a longer interval than GKE's metrics package
   monitoring_config {
     enable_components = ["SYSTEM_COMPONENTS"]
     managed_prometheus {
-      enabled = false
+      enabled = true
     }
   }
 }

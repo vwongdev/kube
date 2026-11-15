@@ -1,0 +1,9 @@
+# Managed Prometheus bills per sample, so 60s halves the cost of a 30s interval
+apiVersion: monitoring.googleapis.com/v1
+kind: OperatorConfig
+metadata:
+  name: config
+  namespace: gmp-public
+collection:
+  kubeletScraping:
+    interval: 60s

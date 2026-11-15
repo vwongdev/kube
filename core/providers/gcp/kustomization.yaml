@@ -5,4 +5,5 @@ resources:
   - ../../base
   - ./external-dns-controller.yaml
   - ./gateway.yaml
+  - ./operator-config.yaml
   - ./secret-store.yaml
